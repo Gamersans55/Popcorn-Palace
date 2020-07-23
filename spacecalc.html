@@ -1,0 +1,38 @@
+<html>
+	<head>
+		<title>Space Calc</title>
+		<style>
+			body{
+				background-color:#1e4007;
+			}
+			div{
+				background-color:#000000;
+				color:#fff;
+			}
+			#header{
+				color:#000000;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="header"></div>
+		<input placeholder="d1" id="d1"></input>
+		<br />
+		<input placeholder="d2" id="d2"></input>
+		<br />
+		<p id="answerSpace">Answer</p>
+		<br>
+		<button onclick="spaceCalc()">Calculate the area of Rhombus</button>
+		
+		<script>
+			function spaceCalc(){
+				var d1 = document.getElementById("d1").value;
+				var d2 = document.getElementById("d2").value;
+				var answer = (1/2)*d1*d2;
+				console.log(answer);
+				document.getElementById("answerSpace").innerHTML = answer;
+			}
+		</script>
+	</body>
+	
+</html>

@@ -1,0 +1,13 @@
+body{
+	background-color:#1e4007;
+	font-family: 'Shadows Into Light', cursive;
+}
+div{
+	background-color:#000000;
+	color:#fff;
+}
+#header{
+	margin:1%;
+	padding:1%;
+	color:#000000;
+}

@@ -1,0 +1,17 @@
+<body>
+	<div id="gameInfo">hello </div>
+	<textarea oninput="iin(event)"></textarea>
+
+	<script>
+		document.getElementById("gameInfo").innerHTML+=`you are Bob:\nsay hi bob `;
+		function iin(e){
+			console.log(e);
+			if (e.data=="z"){
+				document.getElementById("gameInfo").innerHTML+=`LOADING: ZEBRA MODE`;
+				document.body.style="background-image: url('https://cdn.wimmel-napkins.com/F/1/PD/gPD-191969.jpg')";
+			}
+		}
+	</script>
+</body>
+	
+	
