@@ -546,6 +546,18 @@ self["C3_Shaders"] = {};
 
 "use strict";C3.Plugins.TextBox.Exps={Text(){return this._text}};
 
+"use strict";{C3.Plugins.List=class extends C3.SDKDOMPluginBase{constructor(a){super(a,"list"),this.AddElementMessageHandler("click",(a,b)=>a._OnClick(b)),this.AddElementMessageHandler("dblclick",(a,b)=>a._OnDoubleClick(b)),this.AddElementMessageHandler("change",(a,b)=>a._OnChange(b))}Release(){super.Release()}}}
+
+"use strict";C3.Plugins.List.Type=class extends C3.SDKTypeBase{constructor(a){super(a)}Release(){super.Release()}OnCreate(){}};
+
+"use strict";{const a=0;C3.Plugins.List.Instance=class extends C3.SDKDOMInstanceBase{constructor(b,c){if(super(b,"list"),this._items=[],this._stringItems="",this._title="",this._isEnabled=!0,this._isDropdown=!0,this._isMultiSelect=!1,this._autoFontSize=!0,this._id="",this._selectedIndex=-1,this._selectedIndices=[],c){const b=c[a];this._items=b?b.split("\n"):[],this._stringItems=c[a],this._title=c[1],this.GetWorldInfo().SetVisible(!!c[2]),this._isEnabled=!!c[3],this._isDropdown=1===c[4],this._isMultiSelect=!!c[5],this._autoFontSize=!!c[6],this._id=c[7],this._isDropdown&&(this._selectedIndex=0)}this.CreateElement({"id":this._id,"isDropdown":this._isDropdown,"isMultiSelect":this._isMultiSelect,"items":this._items})}Release(){C3.clearArray(this._items),this._items=null,C3.clearArray(this._selectedIndices),this._selectedIndices=null,super.Release()}GetElementState(){return{"title":this._title,"isEnabled":this._isEnabled,"isMultiSelect":this._isMultiSelect}}_UpdateSelectedIndex(){this.PostToDOMElement("set-selected-index",{"selectedIndex":this._selectedIndex})}_ReadSelectionState(a){this._selectedIndex=a["selectedIndex"],this._selectedIndices=a["selectedIndices"]}async _OnClick(a){this._ReadSelectionState(a),await this.TriggerAsync(C3.Plugins.List.Cnds.OnClicked)}async _OnDoubleClick(a){this._ReadSelectionState(a),await this.TriggerAsync(C3.Plugins.List.Cnds.OnDoubleClicked)}async _OnChange(a){this._ReadSelectionState(a),await this.TriggerAsync(C3.Plugins.List.Cnds.OnSelectionChanged)}Draw(){}SaveToJson(){return{"title":this._title,"isEnabled":this._isEnabled,"id":this._id,"items":this._items,"selectedIndex":this._selectedIndex,"selectedIndices":this._selectedIndices}}LoadFromJson(a){this._title=a["title"],this._isEnabled=a["isEnabled"],this._id=a["id"],this._items=a["items"],this._stringItems=this._items.join("/n"),this._selectedIndex=a["selectedIndex"],this._selectedIndices=a["selectedIndices"],this.UpdateElementState(),this.PostToDOMElement("load-state",{"items":this._items,"selectedIndex":this._selectedIndex,"selectedIndices":this._selectedIndices})}GetPropertyValueByIndex(a){return a===0?this._stringItems:1===a?this._title:3===a?this._isEnabled:5===a?this._isMultiSelect:6===a?this._autoFontSize:7===a?this._id:void 0}SetPropertyValueByIndex(b,c){switch(b){case a:if(this._stringItems===c)return;this._items=c.split("\n"),this._stringItems=c,this._selectedIndex=C3.clamp(this._selectedIndex,0,this._items.length-1),this.UpdateElementState(),this.PostToDOMElement("load-state",{"items":this._items,"selectedIndex":this._selectedIndex,"selectedIndices":this._selectedIndices});break;case 1:if(this._title===c)return;this._title=c,this.UpdateElementState();break;case 3:if(this._isEnabled===!!c)return;this._isEnabled=!!c,this.UpdateElementState();break;case 5:if(this._isMultiSelect===!!c)return;this._isMultiSelect=!!c,this.UpdateElementState();break;case 6:if(this._autoFontSize===!!c)return;this._autoFontSize=!!c,this.UpdateElementState();break;case 7:if(this._id===c)return;this._id=c,this.UpdateElementState();}}GetDebuggerProperties(){const a=C3.Plugins.List.Acts;return[{title:"plugins.list.name",properties:[{name:"plugins.list.debugger.item-count",value:this._items.length},{name:"plugins.list.properties.enabled.name",value:this._isEnabled,onedit:(b)=>this.CallAction(a.SetEnabled,b)},{name:"plugins.list.debugger.selected-index",value:this._selectedIndex}]},{title:"plugins.list.properties.items.name",properties:this._items.map((b,c)=>({name:"$"+c,value:b,onedit:(b)=>this.CallAction(a.SetItemText,c,b)}))}]}}}
+
+"use strict";C3.Plugins.List.Cnds={CompareSelection(a,b){return C3.compare(this._selectedIndex,a,b)},OnSelectionChanged(){return!0},OnClicked(){return!0},OnDoubleClicked(){return!0},CompareSelectedText(a,b){const c=this._selectedIndex;if(0>c||c>=this._items.length)return!1;const d=this._items[c];return b?d===a:C3.equalsNoCase(d,a)},CompareTextAt(a,b,c){if(a=Math.floor(a),0>a||a>=this._items.length)return!1;const d=this._items[a];return c?d===b:C3.equalsNoCase(d,b)}};
+
+"use strict";C3.Plugins.List.Acts={Select(a){a=Math.floor(a),0>a&&(a=-1);a>=this._items.length||this._selectedIndex===a||(this._selectedIndex=a,this._selectedIndices=[a],this._UpdateSelectedIndex())},SetTooltip(a){this._title===a||(this._title=a,this.UpdateElementState())},SetVisible(a){const b=this.GetWorldInfo();a=0!==a;b.IsVisible()===a||b.SetVisible(a)},SetEnabled(a){a=0!==a;this._isEnabled===a||(this._isEnabled=a,this.UpdateElementState())},SetFocus(){this.FocusElement()},SetBlur(){this.BlurElement()},SetCSSStyle(a,b){this.SetElementCSSStyle(a,b)},AddItem(a){this._items.push(a),this.PostToDOMElement("add-item",{"text":a,"index":-1})},AddItemAt(a,b){if(a=Math.max(Math.floor(a),0),a>=this._items.length)this._items.push(b),a=-1;else{this._items.splice(a,0,b),this._selectedIndex>=a&&this._selectedIndex++;for(let b=0,c=this._selectedIndices.length;b<c;++b)this._selectedIndices[b]>=a&&this._selectedIndices[b]++}this.PostToDOMElement("add-item",{"index":a,"text":b})},Remove(a){if(a=Math.floor(a),0>a||a>=this._items.length)return;this._items.splice(a,1),this._selectedIndex>=a&&this._selectedIndex--;let b=this._selectedIndices.indexOf(a);-1!==b&&this._selectedIndices.splice(b,1),b=0;for(let c=this._selectedIndices.length;b<c;++b)this._selectedIndices[b]>=a&&this._selectedIndices[b]--;this.PostToDOMElement("remove-item",{"index":a})},SetItemText(a,b){a=Math.floor(a);0>a||a>=this._items.length||(this._items[a]=b,this.PostToDOMElement("set-item",{"index":a,"text":b}))},Clear(){C3.clearArray(this._items),this._selectedIndex=-1,C3.clearArray(this._selectedIndices),this.PostToDOMElement("clear")}};
+
+"use strict";C3.Plugins.List.Exps={ItemCount(){return this._items.length},ItemTextAt(a){return a=Math.floor(a),0>a||a>=this._items.length?"":this._items[a]},SelectedIndex(){return this._selectedIndex},SelectedText(){const a=this._selectedIndex;return 0>a||a>=this._items.length?"":this._items[a]},SelectedCount(){return this._selectedIndices.length},SelectedIndexAt(a){return a=Math.floor(a),0>a||a>=this._selectedIndices.length?0:this._selectedIndices[a]},SelectedTextAt(a){return(a=Math.floor(a),0>a||a>=this._selectedIndices.length)?"":(a=this._selectedIndices[a],0>a||a>=this._items.length?"":this._items[a])}};
+
 "use strict";C3.Behaviors.Platform=class extends C3.SDKBehaviorBase{constructor(a){super(a)}Release(){super.Release()}};
 
 "use strict";C3.Behaviors.Platform.Type=class extends C3.SDKBehaviorTypeBase{constructor(a){super(a)}Release(){super.Release()}OnCreate(){}};
@@ -593,10 +605,12 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.gamepad,
 		C3.Plugins.Text,
 		C3.Plugins.TextBox,
+		C3.Plugins.List,
 		C3.Plugins.Sprite.Cnds.IsOutsideLayout,
 		C3.Plugins.System.Acts.RestartLayout,
 		C3.Plugins.Sprite.Cnds.OnCollision,
 		C3.Plugins.Sprite.Cnds.IsAnimPlaying,
+		C3.Plugins.Sprite.Acts.AddInstanceVar,
 		C3.Plugins.System.Acts.GoToLayoutByName,
 		C3.Plugins.System.Cnds.OnLayoutStart,
 		C3.Plugins.Text.Acts.SetText,
@@ -611,7 +625,7 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.System.Acts.GoToLayout,
 		C3.Plugins.Mouse.Cnds.OnObjectClicked,
 		C3.Plugins.Sprite.Acts.SetInstanceVar,
-		C3.Plugins.TextBox.Exps.Text,
+		C3.Plugins.List.Exps.SelectedIndex,
 		C3.Plugins.TextBox.Acts.SetCSSStyle
 	];
 };
@@ -629,7 +643,8 @@ self.C3_JsPropNameTable = [
 	{Text2: 0},
 	{Sprite: 0},
 	{Sprite2: 0},
-	{TextInput: 0}
+	{TextInput: 0},
+	{List: 0}
 ];
 
 "use strict";
@@ -729,6 +744,7 @@ self.C3_JsPropNameTable = [
 
 	self.C3_ExpressionFuncs = [
 		() => "gem",
+		() => 1,
 		p => {
 			const n0 = p._GetNode(0);
 			return () => and("Level", n0.ExpInstVar());
@@ -742,7 +758,7 @@ self.C3_JsPropNameTable = [
 		},
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
-			return () => f0(200, 500);
+			return () => f0(300, 500);
 		},
 		() => "Grass",
 		() => 2,
@@ -756,7 +772,7 @@ self.C3_JsPropNameTable = [
 		},
 		p => {
 			const n0 = p._GetNode(0);
-			return () => ("Level" + n0.ExpObject());
+			return () => and("Level", n0.ExpObject());
 		},
 		() => "text-align",
 		() => "center"
